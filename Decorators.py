@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime
 from os import path
 import requests
 from bs4 import BeautifulSoup
@@ -10,12 +9,11 @@ def log_decor(function):
     имя функции, аргументы, результат и путь к логам"""
     def logged_function(*args, **kwargs):
         log_file_name = f'{function.__name__}.log'
-        logging.basicConfig(level=logging.INFO, filename=log_file_name)
+        LOG_FORMAT = "%(asctime)s\n%(message)s"
+        logging.basicConfig(level=logging.INFO, filename=log_file_name, format=LOG_FORMAT)
         logger = logging.getLogger()
-        call_time = datetime.now()
         result = function(*args, **kwargs)
-        logger.info(
-            f"\ntime: {call_time.strftime('%d %b %Y %H:%M')}\nfunction name: {function.__name__}\narguments: {*args, kwargs}\n\
+        logger.info(f"function name: {function.__name__}\narguments: {*args, kwargs}\n\
 result: {result}\npath to log: {path.abspath(log_file_name)}\n")
         return result
 
