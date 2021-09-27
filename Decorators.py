@@ -16,7 +16,7 @@ def log_decor(function):
         result = function(*args, **kwargs)
         logger.info(
             f"\ntime: {call_time.strftime('%d %b %Y %H:%M')}\nfunction name: {function.__name__}\narguments: {*args, kwargs}\n\
-            result: {result}\npath to log: {path.abspath(log_file_name)}\n")
+result: {result}\npath to log: {path.abspath(log_file_name)}\n")
         return result
 
     return logged_function
