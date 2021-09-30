@@ -1,26 +1,30 @@
 import logging
-from os import path
 import requests
+from os import mkdir
 from bs4 import BeautifulSoup
 
 
-def log_decor(function):
-    """ Декоратор создает лог-файл с именем функции и записывает в него время вызова,
-    имя функции, аргументы, результат и путь к логам"""
-    def logged_function(*args, **kwargs):
-        log_file_name = f'{function.__name__}.log'
-        LOG_FORMAT = "%(asctime)s\n%(message)s"
-        logging.basicConfig(level=logging.INFO, filename=log_file_name, format=LOG_FORMAT)
-        logger = logging.getLogger()
-        result = function(*args, **kwargs)
-        logger.info(f"function name: {function.__name__}\narguments: {*args, kwargs}\n\
-result: {result}\npath to log: {path.abspath(log_file_name)}\n")
-        return result
+def param_decor(log_path):
+    """ Декоратор создает в указанной директории лог-файл с именем функции
+    и записывает в него время вызова, имя функции, аргументы и результат"""
 
-    return logged_function
+    def log_decor(function):
+        def logged_function(*args, **kwargs):
+            mkdir(log_path)
+            log_file_name = f'{log_path}\{function.__name__}.log'
+            LOG_FORMAT = "%(asctime)s\n%(message)s"
+            logging.basicConfig(level=logging.INFO, filename=log_file_name, format=LOG_FORMAT)
+            logger = logging.getLogger()
+            result = function(*args, **kwargs)
+            logger.info(f"function name: {function.__name__}\narguments: {*args, kwargs}\nresult: {result}\n")
+            return result
+
+        return logged_function
+
+    return log_decor
 
 
-@log_decor
+@param_decor('C:\logs')
 def habr_posts(keywords):
     """Функция принимает список ключевых слов и ищет по ним свежие статьи на habr.com
     Выводит дату, заголовок и ссылку на статью
